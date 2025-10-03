@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  title: Transfer API
+  version: 1.0.0
+paths:
+  /transfers:
+    post:
+      summary: Realiza una transferencia entre cuentas
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferRequest'
+      responses:
+        '200':
+          description: Resultado de la transferencia
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferResult'
+        '400':
+          description: Petición inválida
+components:
+  schemas:
+    TransferRequest:
+      type: object
+      required: [fromAccountId, toAccountId, amount]
+      properties:
+        fromAccountId: { type: string, example: A1 }
+        toAccountId:   { type: string, example: A2 }
+        amount:        { type: integer, format: int32, minimum: 1, example: 200 }
+        idempotencyKey:{ type: string, example: 7d0f4c2b-... }
+    TransferResult:
+      type: object
+      required: [status, message]
+      properties:
+        status:
+          type: string
+          enum: [OK, RECHAZADO]
+        message:
+          type: string
+          example: Fondos insuficientes
